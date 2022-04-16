@@ -10,17 +10,20 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: indexStyles },
 ];
 
-export default function Index() {
+export default function Sell() {
   const [loading, setLoading] = useState(true);
   const [nfts, setNfts] = useState<any[]>([]);
   const loadNFTs = useCallback(async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
     const contract = new ethers.Contract(
       nftmarketaddress,
       NFTMarketplace.abi,
-      provider
+      signer
     );
-    const data = await contract.fetchMarketItems();
+    const data = await contract.fetchItemsListed();
     const items = await Promise.all(
       data.map(async (i: any) => {
         const tokenUri = await contract.tokenURI(i.tokenId);
@@ -44,26 +47,12 @@ export default function Index() {
   useEffect(() => {
     loadNFTs();
   }, []);
-  async function buyNft(nft: any) {
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(
-      nftmarketaddress,
-      NFTMarketplace.abi,
-      signer
+  if (!loading && !nfts.length)
+    return (
+      <section className="center">
+        <h1>Not found</h1>
+      </section>
     );
-
-    /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
-    const transaction = await contract.createMarketSale(nft.tokenId, {
-      value: price,
-    });
-    await transaction.wait();
-    loadNFTs();
-  }
   return loading ? (
     <section className="center">
       <h1>Loading..</h1>
@@ -76,9 +65,6 @@ export default function Index() {
           <div className="content">
             <p className="name">name: {nft.name}</p>
             <p className="price">price : {nft.price}</p>
-            <button className="buy" onClick={() => buyNft(nft)}>
-              buy
-            </button>
           </div>
         </div>
       ))}

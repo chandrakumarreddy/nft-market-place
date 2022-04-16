@@ -1,0 +1,29 @@
+.center {
+  height: calc(100vh - 54px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-page {
+  padding: 32px 72px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: 48px;
+}
+
+.home-page .item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.home-page .item .content {
+  padding: 8px;
+}
+.home-page .item .content .buy {
+  width: 100%;
+  background-color: burlywood;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+}

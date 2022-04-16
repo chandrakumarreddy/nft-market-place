@@ -1,0 +1,23 @@
+.create-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.create-page form {
+  display: grid;
+  row-gap: 16px;
+}
+
+.create-page form input {
+  width: 400px;
+  padding: 16px;
+  height: 40px;
+}
+
+.create-page form input[type="file"] {
+  padding: 16px 0;
+}
+.image-file-url {
+  border-radius: 50%;
+}
